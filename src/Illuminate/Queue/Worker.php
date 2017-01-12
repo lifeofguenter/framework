@@ -92,8 +92,9 @@ class Worker
             // Finally, we will check to see if we have exceeded our memory limits or if
             // the queue should restart based on other indications. If so, we'll stop
             // this worker and let whatever is "monitoring" it restart the process.
-            if ($this->memoryExceeded($options->memory) ||
-                $this->queueShouldRestart($lastRestart)) {
+            if ($this->memoryExceeded($options->memory) {
+                $this->stop(1);
+            } elseif ($this->queueShouldRestart($lastRestart)) {
                 $this->stop();
             }
         }
@@ -468,11 +469,11 @@ class Worker
      *
      * @return void
      */
-    public function stop()
+    public function stop($status = 0)
     {
         $this->events->fire(new Events\WorkerStopping);
 
-        die;
+        exit($status);
     }
 
     /**
